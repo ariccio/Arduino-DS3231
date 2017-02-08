@@ -168,9 +168,9 @@ void DS3231::setDateTime(const char* date, const char* time)
     setDateTime(year+2000, month, day, hour, minute, second);
 }
 
-char* DS3231::dateFormat(const char* dateFormat, RTCDateTime dt)
+const char* DS3231::dateFormat(const char* dateFormat, RTCDateTime dt)
 {
-    char buffer[255];
+    static char buffer[255];
 
     buffer[0] = 0;
 
@@ -296,9 +296,9 @@ char* DS3231::dateFormat(const char* dateFormat, RTCDateTime dt)
     return buffer;
 }
 
-char* DS3231::dateFormat(const char* dateFormat, RTCAlarmTime dt)
+const char* DS3231::dateFormat(const char* dateFormat, RTCAlarmTime dt)
 {
-    char buffer[255];
+    static char buffer[255];
 
     buffer[0] = 0;
 
@@ -953,7 +953,7 @@ uint8_t DS3231::dec2bcd(uint8_t dec)
     return ((dec / 10) * 16) + (dec % 10);
 }
 
-char *DS3231::strDayOfWeek(uint8_t dayOfWeek)
+const char *DS3231::strDayOfWeek(uint8_t dayOfWeek)
 {
     switch (dayOfWeek) {
         case 1:
@@ -982,7 +982,7 @@ char *DS3231::strDayOfWeek(uint8_t dayOfWeek)
     }
 }
 
-char *DS3231::strMonth(uint8_t month)
+const char *DS3231::strMonth(uint8_t month)
 {
     switch (month) {
         case 1:
@@ -1026,7 +1026,7 @@ char *DS3231::strMonth(uint8_t month)
     }
 }
 
-char *DS3231::strAmPm(uint8_t hour, bool uppercase)
+const char *DS3231::strAmPm(uint8_t hour, bool uppercase)
 {
     if (hour < 12)
     {
@@ -1049,22 +1049,24 @@ char *DS3231::strAmPm(uint8_t hour, bool uppercase)
     }
 }
 
-char *DS3231::strDaySufix(uint8_t day)
+const char *DS3231::strDaySufix(uint8_t day)
 {
-    if (day % 10 == 1)
-    {
-        return "st";
-    } else
-    if (day % 10 == 2)
-    {
-        return "nd";
-    }
-    if (day % 10 == 3)
-    {
-        return "rd";
-    }
-
-    return "th";
+	if (day >= 11 && day <= 13)
+ 	{
+	    return "th";
+	}
+	
+	switch (day % 10)
+	{
+	    case 1:
+	        return "st";
+	    case 2:
+	        return "nd";
+	    case 3:
+	        return "rd";
+	    default:
+	}
+	return "th";
 }
 
 uint8_t DS3231::hour12(uint8_t hour24)
